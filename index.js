@@ -11,18 +11,23 @@ const client    = new pg.Client({
   ssl:          settings.ssl
 })
 
-client.connect((err) => {
+client.connect((err, db) => {
   if (err) {
     return console.error("Connection Error", err)
   }
-  client.query("SELECT * FROM famous_people WHERE first_name = $1", [input], (err, result) => {
-    if (err) {
-      return console.error("error running query", err)
-    }
-    console.log(`Found ${result.rows.length} person(s) by the name ${input}:`)
-    for (let row in result.rows) {
-      console.log(`- ${row*1 + 1}: ${result.rows[row].first_name} ${result.rows[row].first_name} born ${result.rows[row].birthdate}`)
-    }
-    client.end()
-  })
+
+  const DataHelpers = require("./lib/data-helpers.js")(db)
+
+
+    console.log(`Searching database ....`)
+    DataHelpers.query(db, input)
+
 })
+
+
+function logResults (result) {
+  console.log(`Found ${result.length} users with first name ${input}`)
+  for (let row in result) {
+    console.log(`- ${row * 0 + 1}: ${result[row].first_name} ${result[row].last_name} born ${result[row].birthdate.toLocaleDateString()}`)
+  }
+}
