@@ -17,11 +17,8 @@ client.connect((err, db) => {
   }
 
   const DataHelpers = require("./lib/data-helpers.js")(db)
-
-
     console.log(`Searching database ....`)
     DataHelpers.query(db, input)
-
 })
 
 
